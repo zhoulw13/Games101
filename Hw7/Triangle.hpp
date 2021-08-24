@@ -139,6 +139,7 @@ public:
 
     bool intersect(const Ray& ray, float& tnear, uint32_t& index) const
     {
+        std::cout << "triangle " << numTriangles << std::endl;
         bool intersect = false;
         for (uint32_t k = 0; k < numTriangles; ++k) {
             const Vector3f& v0 = vertices[vertexIndex[k * 3]];

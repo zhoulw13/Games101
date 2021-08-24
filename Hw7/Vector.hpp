@@ -19,6 +19,7 @@ public:
     Vector3f operator / (const float &r) const { return Vector3f(x / r, y / r, z / r); }
 
     float norm() {return std::sqrt(x * x + y * y + z * z);}
+    float norm2() {return x * x + y * y + z * z;}
     Vector3f normalized() {
         float n = std::sqrt(x * x + y * y + z * z);
         return Vector3f(x / n, y / n, z / n);
@@ -45,6 +46,14 @@ public:
     static Vector3f Max(const Vector3f &p1, const Vector3f &p2) {
         return Vector3f(std::max(p1.x, p2.x), std::max(p1.y, p2.y),
                        std::max(p1.z, p2.z));
+    }
+
+    float max() {
+        return std::max(x, std::max(y, z));
+    }
+
+    float min() {
+        return std::min(x, std::min(y, z));
     }
 };
 inline double Vector3f::operator[](int index) const {

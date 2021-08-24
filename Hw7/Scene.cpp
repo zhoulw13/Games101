@@ -41,7 +41,7 @@ bool Scene::trace(
         const std::vector<Object*> &objects,
         float &tNear, uint32_t &index, Object **hitObject)
 {
-    *hitObject = nullptr;
+    *hitObject = nullptr;    
     for (uint32_t k = 0; k < objects.size(); ++k) {
         float tNearK = kInfinity;
         uint32_t indexK;
@@ -61,4 +61,29 @@ bool Scene::trace(
 Vector3f Scene::castRay(const Ray &ray, int depth) const
 {
     // TO DO Implement Path Tracing Algorithm here
+    Intersection viewpoint = intersect(ray);
+    if (!viewpoint.happened)
+        return Vector3f();
+    Vector3f p = viewpoint.coords;
+    Vector3f N = viewpoint.normal;
+
+    Intersection inter;
+    float pdf_light;
+    sampleLight(inter, pdf_light);
+
+    Vector3f x = inter.coords;
+    Vector3f NN = inter.normal;
+    Vector3f emit = inter.emit;
+
+    Vector3f wo = ray.direction;
+    Vector3f ws = (p-x).normalized();
+
+    Vector3f L_dir(0.0);
+    Intersection between = intersect(Ray(p, ws));
+    if (between.distance - (p-x).norm() > -0.001)
+    {
+        L_dir = emit * viewpoint.m->eval(wo, ws, N) * dotProduct(ws, N) * dotProduct(ws, NN) / (p - x).norm2() / pdf_light;
+    }
+
+    return L_dir;
 }
