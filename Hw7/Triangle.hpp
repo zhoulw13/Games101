@@ -132,6 +132,7 @@ public:
             ptrs.push_back(&tri);
             area += tri.area;
         }
+        numTriangles = triangles.size();
         bvh = new BVHAccel(ptrs);
     }
 
@@ -139,8 +140,8 @@ public:
 
     bool intersect(const Ray& ray, float& tnear, uint32_t& index) const
     {
-        std::cout << "triangle " << numTriangles << std::endl;
         bool intersect = false;
+        //std::cout << numTriangles << std::endl;
         for (uint32_t k = 0; k < numTriangles; ++k) {
             const Vector3f& v0 = vertices[vertexIndex[k * 3]];
             const Vector3f& v1 = vertices[vertexIndex[k * 3 + 1]];

@@ -32,7 +32,6 @@ public:
     }
     bool intersect(const Ray& ray, float &tnear, uint32_t &index) const
     {
-        std::cout << "sphere\n";
         // analytic solution
         Vector3f L = ray.origin - center;
         float a = dotProduct(ray.direction, ray.direction);
