@@ -106,7 +106,7 @@ inline bool Bounds3::IntersectP(const Ray& ray, const Vector3f& invDir,
     Vector3f tminv = dirIsNeg * ttminv + revdirIsNeg * ttmaxv;
     Vector3f tmaxv = dirIsNeg * ttmaxv + revdirIsNeg * ttminv;
 
-    if (tminv.max() < tmaxv.min() && tmaxv.min() >= 0)
+    if (tminv.max() <= tmaxv.min() && tmaxv.min() > 0)
         return true;
 
     return false;
