@@ -15,6 +15,7 @@ struct hit_payload
 class Renderer
 {
 public:
+    //void multithread_run(const Scene& scene, const Ray &ray, const int m, std::vector<Vector3f> *framebuffer);
     void Render(const Scene& scene);
 
 private:

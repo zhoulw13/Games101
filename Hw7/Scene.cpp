@@ -60,28 +60,15 @@ bool Scene::trace(
 // Implementation of Path Tracing
 Vector3f Scene::castRay(const Ray &ray, int depth) const
 {
-    /*
-    float tNear;
-    uint32_t index;
-    Object *hitObject;
-    trace(ray, objects, tNear, index, &hitObject);
-    */
-
     // TO DO Implement Path Tracing Algorithm here
     Intersection viewpoint = intersect(ray);
     if (!viewpoint.happened)
         return Vector3f();
+    if (viewpoint.obj->hasEmit())
+        return viewpoint.m->getEmission();
 
-    for (uint32_t k = 0; k < objects.size(); ++k) 
-    {
-        if (objects[k] == viewpoint.obj)
-            std::cout << k << "\n";
-    }
     Vector3f p = viewpoint.coords;
     Vector3f N = viewpoint.normal;
-
-    if (viewpoint.m->Kd.x == 0.63)
-        std::cout << "exm\n";
 
     Intersection inter;
     float pdf_light;
@@ -92,14 +79,23 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
     Vector3f emit = inter.emit;
 
     Vector3f wo = ray.direction;
-    Vector3f ws = (p-x).normalized();
+    Vector3f ws = (x-p).normalized();
 
     Vector3f L_dir(0.0);
-    Intersection anyobj = intersect(Ray(x, ws));
+    Intersection anyobj = intersect(Ray(p, ws));
     if (anyobj.distance - (p-x).norm() > -0.001)
     {
-        L_dir = emit * viewpoint.m->eval(wo, ws, N) * dotProduct(ws, N) * dotProduct(ws, NN) / (p - x).norm2() / pdf_light;
+        L_dir = emit * viewpoint.m->eval(wo, ws, N) * dotProduct(ws, N) * dotProduct(-ws, NN) / (p - x).norm2() / pdf_light;
     }
 
-    return L_dir;
+    if (get_random_float() > RussianRoulette)
+        return L_dir;
+    Vector3f L_indir(0.0);
+    Vector3f wi = viewpoint.m->sample(wo, N);
+    Intersection newray = intersect(Ray(p, wi));
+    if (newray.happened && !newray.obj->hasEmit())
+    {
+        L_indir = castRay(Ray(p, wi), depth+1) * viewpoint.m->eval(wo, wi, N) * dotProduct(wi, N) / viewpoint.m->pdf(wo, wi, N) / RussianRoulette;
+    }
+    return L_dir + L_indir;
 }
