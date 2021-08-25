@@ -32,7 +32,7 @@ void Renderer::Render(const Scene& scene)
     std::cout << "SPP: " << spp << "\n";
     float total = (float)scene.width * (float)scene.height;
 
-    #pragma omp parallel for num_threads(8)
+    #pragma omp parallel for num_threads(16)
     for (uint32_t j = 0; j < scene.height; ++j) {
         for (uint32_t i = 0; i < scene.width; ++i) {
 
