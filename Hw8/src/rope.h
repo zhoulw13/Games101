@@ -18,9 +18,11 @@ public:
 
   void simulateVerlet(float delta_t, Vector2D gravity);
   void simulateEuler(float delta_t, Vector2D gravity);
+  void simulateVerletConstraints(float delta_t, Vector2D gravity);
 
   vector<Mass *> masses;
   vector<Spring *> springs;
+  double damping = 0.1;
 }; // struct Rope
 }
 #endif /* ROPE_H */
